@@ -2,7 +2,7 @@
 
 function export_variables {
     local util_dir=~/qmk_utils
-    local download_dir=$util_dir/wsl_downloaded
+    local download_dir=$(readlink -f $util_dir/wsl_downloaded)
 
     export DFU_PROGRAMMER=$download_dir/dfu-programmer/dfu-programmer.exe
     export DFU_UTIL=$download_dir/dfu-util-0.9-win64/dfu-util.exe
