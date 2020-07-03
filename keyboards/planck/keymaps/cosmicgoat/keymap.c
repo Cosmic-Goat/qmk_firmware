@@ -28,7 +28,10 @@ enum planck_layers {
 enum planck_keycodes {
   QWERTY = SAFE_RANGE,
   COLEMAK,
-  BACKLIT
+  BACKLIT,
+  // KS for 'Key Shifted', customised shift keys.
+  KS_DOT,
+  KS_COMM
 };
 
 #define LOWER MO(_LOWER)
@@ -64,7 +67,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_COLEMAK] = LAYOUT_planck_grid(
     KC_ESC,  KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,    KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, KC_SLSH,
     KC_TAB,  KC_A,    KC_R,    KC_S,    KC_T,    KC_D,    KC_H,    KC_N,    KC_E,    KC_I,    KC_O,    KC_BSPC,
-    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_K,    KC_M,    KC_DOT,  KC_COMM, KC_QUOT, KC_ENT,
+    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_K,    KC_M,    KS_DOT,  KS_COMM, KC_QUOT, KC_ENT,
     KC_LCTL, KC_RCTL, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_RSHIFT, KC_RALT, KC_PGDN,   KC_PGUP
 ),
 
@@ -117,7 +120,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_RAISE] = LAYOUT_planck_grid(
     KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
-    _______,  KC_LPRN,   KC_RPRN,   KC_LBRACKET,   KC_RBRACKET,   _______,   KC_INS,   KC_LEFT, KC_DOWN,   KC_UP, KC_RIGHT, KC_DEL,
+    _______,  KC_LPRN,   KC_RPRN,   KC_LBRACKET,   KC_RBRACKET,   _______,   KC_INS,   KC_LEFT, KC_UP,   KC_RIGHT, KC_DOWN, KC_DEL,
     _______, _______,   _______,   _______,   _______,  _______,  _______,  KC_PGUP, KC_PGDN, KC_HOME, KC_END, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
@@ -153,39 +156,66 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case QWERTY:
-      if (record->event.pressed) {
-        //print("mode just switched to qwerty and this is a huge string\n");
-        set_single_persistent_default_layer(_QWERTY);
-      }
-      return false;
-      break;
-    case COLEMAK:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_COLEMAK);
-      }
-      return false;
-      break;
-    case BACKLIT:
-      if (record->event.pressed) {
-        register_code(KC_RSFT);
+    switch (keycode) {
+        // From https://github.com/gavinenns/qmk_firmware/blob/773dbdb095d4f48f39ce6ca1c0a9cb49a4cd1a52/keyboards/planck/keymaps/gavinenns/keymap.c#L158
+        case KS_DOT:
+            if (record->event.pressed) {
+                if (get_mods() & MOD_BIT(KC_LSHIFT) || get_mods() & MOD_BIT(KC_RSHIFT)) {
+                    register_code(KC_COMM); // I want to swap > and <, so insert KC_COMM to get shift+, = <
+                } else {
+                    register_code(KC_DOT);
+                }
+            } else {
+                unregister_code(KC_COMM);
+                unregister_code(KC_DOT);
+            }
+            return false;
+            break;
+        case KS_COMM:
+            if (record->event.pressed) {
+                if (get_mods() & MOD_BIT(KC_LSHIFT) || get_mods() & MOD_BIT(KC_RSHIFT)) {
+                    register_code(KC_DOT); // I want to swap > and <, so insert KC_DOT to get shift+. = >
+                } else {
+                    register_code(KC_COMM);
+                }
+            } else {
+                unregister_code(KC_DOT);
+                unregister_code(KC_COMM);
+            }
+            return false;
+            break;
+        case QWERTY:
+            if (record->event.pressed) {
+                // print("mode just switched to qwerty and this is a huge string\n");
+                set_single_persistent_default_layer(_QWERTY);
+            }
+            return false;
+            break;
+        case COLEMAK:
+            if (record->event.pressed) {
+                set_single_persistent_default_layer(_COLEMAK);
+            }
+            return false;
+            break;
+        case BACKLIT:
+            if (record->event.pressed) {
+                register_code(KC_RSFT);
 #ifdef BACKLIGHT_ENABLE
-          backlight_step();
-        #endif
-        #ifdef KEYBOARD_planck_rev5
-          writePinLow(E6);
-        #endif
-      } else {
-        unregister_code(KC_RSFT);
-        #ifdef KEYBOARD_planck_rev5
-          writePinHigh(E6);
-        #endif
-      }
-      return false;
-      break;
-  }
-  return true;
+                backlight_step();
+#endif
+#ifdef KEYBOARD_planck_rev5
+                writePinLow(E6);
+#endif
+            } else {
+                unregister_code(KC_RSFT);
+#ifdef KEYBOARD_planck_rev5
+                writePinHigh(E6);
+#endif
+            }
+            return false;
+            break;
+    }
+    return true;
 }
 
 bool muse_mode = false;
