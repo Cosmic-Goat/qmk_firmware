@@ -34,8 +34,11 @@ enum planck_keycodes {
   KS_COMM
 };
 
-#define LOWER MO(_LOWER)
-#define RAISE MO(_RAISE)
+/* #define LOWER MO(_LOWER) */
+/* #define RAISE MO(_RAISE) */
+
+#define LOWER TT(_LOWER)
+#define RAISE TT(_RAISE)
 
 // // Tap Dance Declarations
 // enum {
@@ -61,14 +64,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |   K  |   M  |   .  |   ,  |   "  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | Ctrl | GUI  | Alt  |Lower |    Space    |Raise | Left | Down |  Up  |Right |
+ * |LCtrl | PgUp | GUI  | Alt  |Lower |    Space    |Raise |RShift| RAlt | PgDn |Right |
  * `-----------------------------------------------------------------------------------'
  */
 [_COLEMAK] = LAYOUT_planck_grid(
-    KC_ESC,  KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,    KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, KC_SLSH,
-    KC_TAB,  KC_A,    KC_R,    KC_S,    KC_T,    KC_D,    KC_H,    KC_N,    KC_E,    KC_I,    KC_O,    KC_BSPC,
-    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_K,    KC_M,    KS_DOT,  KS_COMM, KC_QUOT, KC_ENT,
-    KC_LCTL, KC_RCTL, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_RSHIFT, KC_RALT, KC_PGDN,   KC_PGUP
+    KC_ESC,  KC_Q,    KC_W,    KC_F,    KC_P,    KC_G,    KC_J,    KC_L,    KC_U,      KC_Y,    KC_SCLN, KC_SLSH,
+    KC_TAB,  KC_A,    KC_R,    KC_S,    KC_T,    KC_D,    KC_H,    KC_N,    KC_E,      KC_I,    KC_O,    KC_BSPC,
+    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_K,    KC_M,    KS_DOT,    KS_COMM, KC_QUOT, KC_ENT,
+    KC_LCTL, KC_PGUP, KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_RSHIFT, KC_RALT, KC_PGDN, KC_RCTL
 ),
 
 /* Qwerty
@@ -101,10 +104,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_LOWER] = LAYOUT_planck_grid(
-    KC_TILD, _______, _______,   _______, _______,  _______, _______, KC_7,    KC_8, KC_9,    KC_0, _______,
-    _______, _______,   KC_GRAVE,   KC_PIPE,   KC_BSLS,   _______,   _______,   KC_4,    KC_5, KC_6,    KC_MINS, KC_DEL,
-    _______, _______,   _______,   _______,   _______,  _______,  _______,  KC_1,    KC_2, KC_3,    KC_EQL,  _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, KC_0, _______, _______, _______
+ KC_TILD, _______,    _______,  _______, _______, _______, _______,   KC_7,    KC_8, KC_9,    _______, _______,
+ _______, S(KC_MINS), KC_GRAVE, KC_PIPE, KC_BSLS, _______, S(KC_EQL), KC_4,    KC_5, KC_6,    KC_MINS, _______,
+ _______, _______,    _______,  _______, _______, _______, KC_EQL,    KC_1,    KC_2, KC_3,    _______, _______,
+ _______, _______,    _______,  _______, _______, _______, _______,   _______, KC_0, _______, _______, _______
 ),
 
 /* Raise
@@ -119,10 +122,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_RAISE] = LAYOUT_planck_grid(
-    KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
-    _______,  KC_LPRN,   KC_RPRN,   KC_LBRACKET,   KC_RBRACKET,   _______,   KC_INS,   KC_LEFT, KC_UP,   KC_RIGHT, KC_DOWN, KC_DEL,
-    _______, _______,   _______,   _______,   _______,  _______,  _______,  KC_PGUP, KC_PGDN, KC_HOME, KC_END, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+ KC_F1,   KC_F2,   KC_F3,   KC_F4,      KC_F5,      KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_F11,  KC_F12,
+ _______, KC_LBRC, KC_RBRC, KC_LPRN,    KC_RPRN,    _______, KC_INS,  KC_LEFT, KC_UP,   KC_RIGHT, KC_DOWN, KC_DEL,
+ _______, _______, _______, S(KC_LBRC), S(KC_RBRC), _______, _______, KC_PGUP, KC_PGDN, KC_HOME,  KC_END,  _______,
+ _______, _______, _______, _______,    _______,    _______, _______, _______, _______, _______,  _______, _______
 ),
 
 /* Adjust (Lower + Raise)
@@ -138,18 +141,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_ADJUST] = LAYOUT_planck_grid(
-    _______, RESET,   DEBUG,   RGB_TOG, RGB_MOD, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD,  RGB_VAI, RGB_VAD, _______ ,
-    _______, AU_TOG, CLICKY_TOGGLE,  MU_TOG,   MU_MOD,  _______, MI_TOG, COLEMAK,  QWERTY,  _______,  _______,  _______,
-    _______, CK_UP,  CK_DOWN,  MUV_DE,   MUV_IN,  _______,   _______,  TERM_ON, TERM_OFF, _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, AG_NORM, AG_SWAP
+    _______, RESET,   DEBUG,         RGB_TOG, RGB_MOD, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD,  RGB_VAI, RGB_VAD, _______,
+    _______, AU_TOG,  CLICKY_TOGGLE, MU_TOG,  MU_MOD,  _______, MI_TOG,  COLEMAK, QWERTY,   _______, _______, _______,
+    _______, CK_UP,   CK_DOWN,       MUV_DE,  MUV_IN,  _______, _______, TERM_ON, TERM_OFF, _______, _______, _______,
+    _______, _______, _______,       _______, _______, _______, _______, _______, _______,  _______, AG_NORM, AG_SWAP
 )
 
 };
 
-// #ifdef AUDIO_ENABLE
-//   float plover_song[][2]     = SONG(PLOVER_SOUND);
-//   float plover_gb_song[][2]  = SONG(PLOVER_GOODBYE_SOUND);
-// #endif
+#ifdef AUDIO_ENABLE
+  float plover_song[][2]     = SONG(PLOVER_SOUND);
+  float plover_gb_song[][2]  = SONG(PLOVER_GOODBYE_SOUND);
+#endif
 
 layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
@@ -260,21 +263,21 @@ void dip_switch_update_user(uint8_t index, bool active) {
     switch (index) {
         case 0: {
 #ifdef AUDIO_ENABLE
-      //      static bool play_sound = false;
+           static bool play_sound = false;
 #endif
             if (active) {
 #ifdef AUDIO_ENABLE
-                //if (play_sound) { PLAY_SONG(plover_song); }
+                if (play_sound) { PLAY_SONG(plover_song); }
 #endif
                 layer_on(_ADJUST);
             } else {
 #ifdef AUDIO_ENABLE
-                //if (play_sound) { PLAY_SONG(plover_gb_song); }
+                if (play_sound) { PLAY_SONG(plover_gb_song); }
 #endif
                 layer_off(_ADJUST);
             }
 #ifdef AUDIO_ENABLE
-   //         play_sound = true;
+        play_sound = true;
 #endif
             break;
         }

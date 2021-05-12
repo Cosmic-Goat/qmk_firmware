@@ -2,6 +2,9 @@
 
 // #define TAPPING_TERM 200
 
+// See https://docs.qmk.fm/#/feature_layers?id=switching-and-toggling-layers
+#define TAPPING_TOGGLE 2
+
 #ifdef AUDIO_ENABLE
     #define STARTUP_SONG SONG(PLANCK_SOUND)
     // #define STARTUP_SONG SONG(NO_SOUND)
